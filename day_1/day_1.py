@@ -1,5 +1,3 @@
-import re
-
 def a(input: str) -> int:
     total = 0
     with open(input, "r") as f:
@@ -18,20 +16,13 @@ def b(input: str) -> int:
             line = line.strip()
             for word, digit in digits.items():
                 if word in line:
-                    print(line)
-                    line = line.replace(word, str(digit))
-                    print(line)
+                    line = line.replace(word, word[0] + str(digit) + word[-1])
             line = ''.join(i for i in line if i.isdigit())
-            print(line)
-            # line = line[0] + line[-1]
-            print(line)
-            if line and len(line) > 1:
-                line = line[0] + line[-1]
-                total += int(line)
-                print("total" + str(total))
-        
+            line = line[0] + line[-1]
+            if line:
+                total += int(line) 
     return total
 
 
-# print(a("day_1/input.txt"))
-# print(b("day_1/input.txt"))
+print("part 1 sol: ", a("day_1/input.txt"))
+print("part 2 sol: ", b("day_1/input.txt"))
