@@ -1,61 +1,44 @@
+import itertools
+import math
 import re
 
 
 def a(input: str) -> int:
-    sol = 0
-    lines_matrix = []
-    with open(input, "r") as f:
-        for line in f:
-            line = line.strip()
-            lines_matrix.append(line)
+    with open(input) as f:
+        ls = f.read().strip().split("\n")
 
-    numbers_list = []
-    counter = 0
+    box = list(itertools.product((-1, 0, 1), (-1, 0, 1)))
+    parts_by_symbol = {
+        (i, j): (x, [])
+        for i, l in enumerate(ls)
+        for j, x in enumerate(l)
+        if x != "." and not x.isdigit()
+    }
 
-    for line in lines_matrix:
-        numbers = {}
-        for match in re.finditer(r"\b\d+\b", line):
-            number = match.group()
-            positions = (match.start(), match.end())
-            numbers[number] = positions
-        print(numbers)
+    part_sum = 0
 
-        for num, pos in numbers.items():
-            l = lines_matrix[pos[0] - 1]
-            r = lines_matrix[pos[1] + 1]
-            if not l.isdigit() or l == "." or not r.isdigit() or r == ".":
-                print(number)
+    for i, l in enumerate(ls):
+        for match in re.finditer(r"\d+", l):
+            n = int(match.group(0))
+            boundary = {
+                (i + di, j + dj)
+                for di, dj in box
+                for j in range(match.start(), match.end())
+            }
+            if parts_by_symbol.keys() & boundary:
+                part_sum += n
+            for symbol in parts_by_symbol.keys() & boundary:
+                parts_by_symbol[symbol][1].append(n)
 
-        #     right = numbers[number][1] + 1
-        #     if not (line[right].isdigit() or line[right] == "."):
-        #         print(number)
-
-        numbers_list.append(counter)
-        numbers_list.append(numbers)
-
-        counter *= 1
-
-    # is_number = False
-    # for line in range(1, len(lines_matrix) - 1):
-    #     for char in range(1, len(lines_matrix[line]) - 1):
-    #         if lines_matrix[line][char].isdigit():
-    #             is_number = True
-    #             if (
-    #                 lines_matrix[line][char - 1] != "."
-    #                 or lines_matrix[line][char + 1] != "."
-    #                 or lines_matrix[line - 1][char - 1] != "."
-    #                 or lines_matrix[line - 1][char + 1] != "."
-    #                 or lines_matrix[line + 1][char - 1] != "."
-    #                 or lines_matrix[line + 1][char + 1] != "."
-    #             ):
-    #                 print(num_str)
-    #                 if is_number:
-    #                     num_str += lines_matrix[line][char]
-    #     else:
-    #         sol += int(num_str)
-    #         num_str = ""
-    #         is_number = False
-    return sol
+    # part b
+    print(
+        sum(
+            math.prod(parts)
+            for symbol, parts in parts_by_symbol.values()
+            if len(parts) == 2 and symbol == "*"
+        )
+    )
+    return part_sum
 
 
 print(a("day_3/input.txt"))
