@@ -1,5 +1,7 @@
-def a(input):
-    lines = open(input, "r").readlines()
+lines = open("day_4/input.txt", "r").readlines()
+
+
+def a(lines):
     sol = 0
     for line in lines:
         points = 1
@@ -16,8 +18,7 @@ def a(input):
     return sol
 
 
-def b(input):
-    lines = open(input, "r").readlines()
+def b(lines):
     cards = [1] * len(lines)
     for i, line in enumerate(lines):
         x, y = map(str.split, line.split("|"))
@@ -28,4 +29,4 @@ def b(input):
     return sum(cards)
 
 
-print(f"sol a: {a('day_4/input.txt')} sol b: {b('day_4/input.txt')}")
+print(f"sol a: {a(lines)} sol b: {b(lines)}")
